@@ -1,0 +1,10 @@
+- type: image
+  name: image
+  file: Dockerfile
+  context: .
+- type: execute
+  name: run
+  image: image
+  dependsOn:
+    - image
+  cmd: ["python3", "-c", "print('hello!')"]

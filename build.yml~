@@ -1,0 +1,27 @@
+- type: namespace
+  name: batch_pod_namespace
+- type: image
+  name: image
+  file: Dockerfile
+  context: .
+- type: kubernetes
+  name: dep
+  file: deployment.yaml.in
+  dependsOn:
+    - batch_pod_namespace
+    - image
+- type: image
+  name: test_image
+  file: Dockerfile.test
+  context: .
+- type: execute
+  name: test
+  image: test_image
+  dependsOn:
+    - dep
+  # cmd: ["python3", "-m", "unittest", "test_batch.py"]
+  env:
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
